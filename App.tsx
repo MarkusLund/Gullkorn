@@ -1,26 +1,11 @@
 import {NavigationContainer} from '@react-navigation/native';
-import {
-  createNativeStackNavigator,
-  NativeStackScreenProps,
-} from '@react-navigation/native-stack';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native';
-import {dateToNorwegianString, datoToPrettyString} from './helpers';
-
-type RootStackParamList = {
-  Profile: {personName: string};
-  Home: undefined;
-};
+import {SafeAreaView, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import ProfileScreen from './screens/Profile';
+import {HomeScreenProps, RootStackParamList} from './types';
 
 const profileScreenName = 'Profile';
-type ProfileScreenProps = NativeStackScreenProps<RootStackParamList, 'Profile'>;
-type HomeScreenProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const names = ['Sondre', 'Ivar', 'Mathias'];
@@ -45,26 +30,6 @@ const HomeScreen = ({navigation}: HomeScreenProps) => {
           <Text>{name}</Text>
         </TouchableOpacity>
       ))}
-    </SafeAreaView>
-  );
-};
-
-const ProfileScreen = ({route}: ProfileScreenProps) => {
-  const [newGullkorn, setNewGullkorn] = React.useState('');
-  const [gullkornDate, setGullkornDate] = React.useState(new Date());
-
-  return (
-    <SafeAreaView style={styles.profileScreen}>
-      <Text style={styles.gullkornText}>{newGullkorn}</Text>
-      <Text style={styles.gullkornDate}>
-        {dateToNorwegianString(gullkornDate)}
-      </Text>
-      <Text style={styles.gullkornAuthor}>- {route.params.personName}</Text>
-      <TextInput
-        style={styles.inputText}
-        onChangeText={text => setNewGullkorn(text)}
-        value={newGullkorn}
-      />
     </SafeAreaView>
   );
 };
@@ -107,35 +72,6 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 100,
     backgroundColor: '#ccc',
-  },
-  gullkornText: {
-    // width: '90%',
-    fontSize: 20,
-    fontStyle: 'italic',
-    height: 40,
-    borderBottomWidth: 1,
-    padding: 10,
-  },
-  gullkornDate: {
-    // width: '90%',
-    fontSize: 20,
-    height: 40,
-    borderBottomWidth: 1,
-    padding: 10,
-  },
-  gullkornAuthor: {
-    // width: '90%',
-    fontSize: 20,
-    fontStyle: 'italic',
-    height: 40,
-    borderBottomWidth: 1,
-  },
-  inputText: {
-    width: '90%',
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
   },
 });
 
