@@ -12,3 +12,10 @@ export type HomeScreenProps = NativeStackScreenProps<
   RootStackParamList,
   'Home'
 >;
+
+export type Gullkorn = {
+  author: string;
+  gullkorn: string;
+  date: string;
+  id: number;
+};

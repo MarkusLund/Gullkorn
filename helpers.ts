@@ -1,3 +1,3 @@
-export function dateToNorwegianString(date: Date) {
-  return date.toLocaleDateString('nb-NO');
+export function dateToNorwegianString(date: string) {
+  return new Date(date).toLocaleDateString('nb-NO');
 }

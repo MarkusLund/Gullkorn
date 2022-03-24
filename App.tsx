@@ -4,25 +4,19 @@ import React from 'react';
 import {SafeAreaView, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import ProfileScreen from './screens/Profile';
 import {HomeScreenProps, RootStackParamList} from './types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const profileScreenName = 'Profile';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const names = ['Sondre', 'Ivar', 'Mathias'];
 
-const GullkornScreen = () => {
-  return (
-    <SafeAreaView style={styles.screen}>
-      <Text>Gullkorn</Text>
-    </SafeAreaView>
-  );
-};
-
 const HomeScreen = ({navigation}: HomeScreenProps) => {
   return (
     <SafeAreaView style={styles.screen}>
       {names.map(name => (
         <TouchableOpacity
+          key={name}
           style={styles.roundButton}
           onPress={() =>
             navigation.navigate(profileScreenName, {personName: name})
@@ -30,6 +24,9 @@ const HomeScreen = ({navigation}: HomeScreenProps) => {
           <Text>{name}</Text>
         </TouchableOpacity>
       ))}
+      <TouchableOpacity onPress={() => AsyncStorage.clear()}>
+        <Text>Slett all data</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
