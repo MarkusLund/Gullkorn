@@ -12,12 +12,12 @@ export function RootStack() {
       <Stack.Screen
         name={homeScreenName}
         component={HomeScreen}
-        options={{title: 'Gullkorn'}}
+        options={{title: 'Velg person'}}
       />
       <Stack.Screen
         name={profileScreenName}
         component={ProfileScreen}
-        options={({route}) => ({title: route.params.personName})}
+        options={() => ({title: 'Legg til gullkorn'})}
       />
     </Stack.Navigator>
   );
