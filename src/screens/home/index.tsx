@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Avatar, Pressable, VStack} from 'native-base';
 import {profileScreenName} from '../Profile';
 
-const people = [
+export const people = [
   {name: 'Sondre', img: require('../../../imgs/sondre.jpg')},
   {name: 'Ivar', img: require('../../../imgs/ivar.jpg')},
   {name: 'Mathias', img: require('../../../imgs/mathias.jpg')},

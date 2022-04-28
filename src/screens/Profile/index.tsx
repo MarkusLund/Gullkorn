@@ -1,16 +1,25 @@
 import React, {useEffect, useState} from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+
 import DatePicker from 'react-native-date-picker';
-import {dateToNorwegianString} from '../../../helpers';
+import {
+  dateToNorwegianString,
+  dateToNorwgianStringTodayIfNow,
+} from '../../../helpers';
 import {ProfileScreenProps, Gullkorn} from '../../../types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+  Avatar,
+  Box,
+  Text,
+  Input,
+  VStack,
+  HStack,
+  Button,
+  ScrollView,
+} from 'native-base';
+import {Keyboard} from 'react-native';
+import {people} from '../home';
+import GullkornCard from '../../components/Card';
 
 export const profileScreenName = 'Profile';
 
@@ -43,52 +52,81 @@ const ProfileScreen = ({route}: ProfileScreenProps) => {
     fetchGullkorn(route.params.personName).then(setGullkorn);
   }, [route.params.personName]);
 
+  const saveGullkorn = () => {
+    const newGullkorn: Gullkorn = {
+      author: route.params.personName,
+      gullkorn: gullkornText,
+      date: gullkornDate,
+      id: Date.now(),
+    };
+    const updatedGullkorns = gullkorn
+      ? [...gullkorn, newGullkorn]
+      : [newGullkorn];
+    storeGullkorn(route.params.personName, updatedGullkorns);
+    setGullkorn(updatedGullkorns);
+    setGullkornText('');
+    setGullkornDate(new Date().toISOString());
+    Keyboard.dismiss();
+  };
+
   return (
-    <SafeAreaView style={styles.profileScreen}>
-      <Text style={styles.gullkornText}>{gullkornText}</Text>
-      <Text style={styles.gullkornDate}>
-        {dateToNorwegianString(gullkornDate)}
-      </Text>
-      <Text style={styles.gullkornAuthor}>- {route.params.personName}</Text>
-      <TextInput
-        style={styles.inputText}
-        onChangeText={text => setGullkornText(text)}
-        value={gullkornText}
-      />
-      <View style={styles.buttonRow}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => setDatePickerOpen(true)}>
-          <Text>Velg dato</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            const newGullkorn: Gullkorn = {
-              author: route.params.personName,
-              gullkorn: gullkornText,
-              date: gullkornDate,
-              id: Date.now(),
-            };
-            const updatedGullkorns = gullkorn
-              ? [...gullkorn, newGullkorn]
-              : [newGullkorn];
-            storeGullkorn(route.params.personName, updatedGullkorns);
-            setGullkorn(updatedGullkorns);
-            setGullkornText('');
-            setGullkornDate(new Date().toISOString());
-          }}>
-          <Text>Lagre gullkorn</Text>
-        </TouchableOpacity>
-      </View>
-      <View>
-        {gullkorn &&
-          gullkorn?.map(g => (
-            <Text key={g.gullkorn}>
-              {g.gullkorn} - {dateToNorwegianString(g.date)}
-            </Text>
-          ))}
-      </View>
+    <Box safeArea h="100%">
+      <VStack alignItems="center">
+        <Avatar
+          size="2xl"
+          source={
+            people.find(a => a.name === route.params.personName)?.img ?? ''
+          }
+          shadow="5"
+        />
+        <Text shadow="5" fontSize="2xl" mb="5">
+          {route.params.personName}
+        </Text>
+        <Input
+          w="80%"
+          size="xl"
+          backgroundColor="white"
+          placeholder="Gullkorn"
+          mb="5"
+          onChangeText={text => {
+            setGullkornText(text);
+          }}
+          value={gullkornText}
+          onSubmitEditing={() => {
+            saveGullkorn();
+          }}
+        />
+        <HStack mb="5">
+          <Button onPress={() => setDatePickerOpen(true)}>
+            {dateToNorwgianStringTodayIfNow(gullkornDate)}
+          </Button>
+          <Button
+            disabled={!gullkornText}
+            ml="10"
+            onPress={() => {
+              saveGullkorn();
+            }}>
+            Lagre gullkorn 🌽
+          </Button>
+        </HStack>
+      </VStack>
+      <ScrollView>
+        <VStack>
+          {gullkorn &&
+            gullkorn
+              ?.sort(
+                (g1, g2) =>
+                  new Date(g2.date).getTime() - new Date(g1.date).getTime(),
+              )
+              .map(g => (
+                <GullkornCard
+                  key={g.id}
+                  gullKornDate={dateToNorwegianString(g.date)}
+                  gullkornText={g.gullkorn}
+                />
+              ))}
+        </VStack>
+      </ScrollView>
       <DatePicker
         modal
         open={datePickerOpen}
@@ -106,51 +144,8 @@ const ProfileScreen = ({route}: ProfileScreenProps) => {
         cancelText="Avbryt"
         title="Velg dato"
       />
-    </SafeAreaView>
+    </Box>
   );
 };
-
-const styles = StyleSheet.create({
-  button: {
-    backgroundColor: '#DDDDDD',
-    padding: 10,
-    margin: 10,
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-  },
-  profileScreen: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  gullkornText: {
-    fontSize: 20,
-    fontStyle: 'italic',
-    height: 40,
-    borderBottomWidth: 1,
-    padding: 10,
-    color: '#333',
-  },
-  gullkornDate: {
-    fontSize: 20,
-    height: 40,
-    borderBottomWidth: 1,
-    padding: 10,
-  },
-  gullkornAuthor: {
-    fontSize: 20,
-    fontStyle: 'italic',
-    height: 40,
-    borderBottomWidth: 1,
-  },
-  inputText: {
-    width: '90%',
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-  },
-});
 
 export default ProfileScreen;
