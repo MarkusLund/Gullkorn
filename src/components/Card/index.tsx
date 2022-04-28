@@ -1,7 +1,15 @@
 import {Box, HStack, Pressable, Stack, Text} from 'native-base';
 import React from 'react';
 
-const GullkornCard = ({gullkornText, gullKornDate}) => {
+type GullkornCardProps = {
+  gullkornText: string;
+  gullkornDate: string;
+};
+
+const GullkornCard: React.FC<GullkornCardProps> = ({
+  gullkornText,
+  gullkornDate,
+}) => {
   return (
     <Pressable onLongPress={() => console.log('onLongPress')}>
       <Box alignItems="center" mb="2">
@@ -20,7 +28,7 @@ const GullkornCard = ({gullkornText, gullKornDate}) => {
               justifyContent="space-between">
               <HStack alignItems="center">
                 <Text color="coolGray.600" fontWeight="400">
-                  {gullKornDate}
+                  {gullkornDate}
                 </Text>
               </HStack>
             </HStack>

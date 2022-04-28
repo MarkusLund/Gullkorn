@@ -121,7 +121,7 @@ const ProfileScreen = ({route}: ProfileScreenProps) => {
               .map(g => (
                 <GullkornCard
                   key={g.id}
-                  gullKornDate={dateToNorwegianString(g.date)}
+                  gullkornDate={dateToNorwegianString(g.date)}
                   gullkornText={g.gullkorn}
                 />
               ))}
