@@ -36,9 +36,7 @@ const fetchGullkorn = async (author: string): Promise<Gullkorn[]> => {
 const ProfileScreen = ({route}: ProfileScreenProps) => {
   const [gullkornText, setGullkornText] = useState('');
   const [gullkornDate, setGullkornDate] = useState(new Date().toISOString());
-
   const [datePickerOpen, setDatePickerOpen] = useState(false);
-
   const [gullkorn, setGullkorn] = useState<Gullkorn[]>([]);
 
   useEffect(() => {
