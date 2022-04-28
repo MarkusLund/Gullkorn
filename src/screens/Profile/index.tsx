@@ -52,6 +52,12 @@ const ProfileScreen = ({route}: ProfileScreenProps) => {
     fetchGullkorn(route.params.personName).then(setGullkorn);
   }, [route.params.personName]);
 
+  const removeGullkorn = (id: number) => {
+    const newLocal = gullkorn.filter(g => g.id !== id);
+    setGullkorn(newLocal);
+    storeGullkorn(route.params.personName, newLocal);
+  };
+
   const saveGullkorn = () => {
     const newGullkorn: Gullkorn = {
       author: route.params.personName,
@@ -123,6 +129,9 @@ const ProfileScreen = ({route}: ProfileScreenProps) => {
                   key={g.id}
                   gullkornDate={dateToNorwegianString(g.date)}
                   gullkornText={g.gullkorn}
+                  deleteGullkorn={() => {
+                    removeGullkorn(g.id);
+                  }}
                 />
               ))}
         </VStack>
