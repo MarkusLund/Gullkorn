@@ -86,7 +86,7 @@ const ProfileScreen = ({route}: ProfileScreenProps) => {
           w="80%"
           size="xl"
           backgroundColor="white"
-          placeholder="Gullkorn"
+          placeholder="..."
           mb="5"
           onChangeText={text => {
             setGullkornText(text);
