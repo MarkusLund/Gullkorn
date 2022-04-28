@@ -8,9 +8,11 @@ import {
   View,
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
-import {dateToNorwegianString} from '../../helpers';
-import {ProfileScreenProps, Gullkorn} from '../../types';
+import {dateToNorwegianString} from '../../../helpers';
+import {ProfileScreenProps, Gullkorn} from '../../../types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+export const profileScreenName = 'Profile';
 
 const storeGullkorn = async (author: string, gullkorn: Gullkorn[]) => {
   try {
@@ -42,8 +44,6 @@ const ProfileScreen = ({route}: ProfileScreenProps) => {
   useEffect(() => {
     fetchGullkorn(route.params.personName).then(setGullkorn);
   }, [route.params.personName]);
-
-  console.log('gullkorn', gullkorn);
 
   return (
     <SafeAreaView style={styles.profileScreen}>
@@ -96,8 +96,6 @@ const ProfileScreen = ({route}: ProfileScreenProps) => {
         open={datePickerOpen}
         date={new Date(gullkornDate)}
         onConfirm={date => {
-          console.log('date', date);
-
           setDatePickerOpen(false);
           setGullkornDate(date.toISOString());
         }}
