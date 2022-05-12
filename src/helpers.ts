@@ -1,5 +1,5 @@
 export function dateToNorwegianString(date: string) {
-  return new Date(date).toLocaleDateString('nb-NO');
+  return new Date(date).toLocaleDateString("nb-NO");
 }
 
 export function dateToNorwgianStringTodayIfNow(date: string) {
@@ -11,7 +11,7 @@ export function dateToNorwgianStringTodayIfNow(date: string) {
     dateToCompare.getMonth() === today.getMonth() &&
     dateToCompare.getFullYear() === today.getFullYear()
   ) {
-    return 'I dag';
+    return "I dag";
   }
   return dateToNorwegianString(date);
 }

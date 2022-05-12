@@ -1,17 +1,22 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 export type RootStackParamList = {
-  Profile: {personName: string};
+  Profile: { personName: string };
   Home: undefined;
+  Settings: undefined;
 };
 
 export type ProfileScreenProps = NativeStackScreenProps<
   RootStackParamList,
-  'Profile'
+  "Profile"
 >;
 export type HomeScreenProps = NativeStackScreenProps<
   RootStackParamList,
-  'Home'
+  "Home"
+>;
+export type SettingsScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  "Settings"
 >;
 
 export type Gullkorn = {

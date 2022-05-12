@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from "react";
 
-import DatePicker from 'react-native-date-picker';
+import DatePicker from "react-native-date-picker";
 import {
   dateToNorwegianString,
   dateToNorwgianStringTodayIfNow,
-} from '../../../helpers';
-import {ProfileScreenProps, Gullkorn} from '../../../types';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+} from "../../helpers";
+import { ProfileScreenProps, Gullkorn } from "../../types";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Avatar,
   Box,
@@ -17,12 +17,12 @@ import {
   Button,
   ScrollView,
   useTheme,
-} from 'native-base';
-import {Keyboard} from 'react-native';
-import {people} from '../home';
-import GullkornCard from '../../components/Card';
+} from "native-base";
+import { Keyboard } from "react-native";
+import GullkornCard from "../../components/Card";
+import { people } from "../../data/consts";
 
-export const profileScreenName = 'Profile';
+export const profileScreenName = "Profile";
 
 const storeGullkorn = async (author: string, gullkorn: Gullkorn[]) => {
   try {
@@ -43,19 +43,19 @@ const fetchGullkorn = async (author: string): Promise<Gullkorn[]> => {
   }
 };
 
-const ProfileScreen = ({route}: ProfileScreenProps) => {
-  const [gullkornText, setGullkornText] = useState('');
+const ProfileScreen = ({ route }: ProfileScreenProps) => {
+  const [gullkornText, setGullkornText] = useState("");
   const [gullkornDate, setGullkornDate] = useState(new Date().toISOString());
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [gullkorn, setGullkorn] = useState<Gullkorn[]>([]);
 
-  const {colors} = useTheme();
+  const { colors } = useTheme();
   useEffect(() => {
     fetchGullkorn(route.params.personName).then(setGullkorn);
   }, [route.params.personName]);
 
   const removeGullkorn = (id: number) => {
-    const newLocal = gullkorn.filter(g => g.id !== id);
+    const newLocal = gullkorn.filter((g) => g.id !== id);
     setGullkorn(newLocal);
     storeGullkorn(route.params.personName, newLocal);
   };
@@ -72,7 +72,7 @@ const ProfileScreen = ({route}: ProfileScreenProps) => {
       : [newGullkorn];
     storeGullkorn(route.params.personName, updatedGullkorns);
     setGullkorn(updatedGullkorns);
-    setGullkornText('');
+    setGullkornText("");
     setGullkornDate(new Date().toISOString());
     Keyboard.dismiss();
   };
@@ -83,11 +83,11 @@ const ProfileScreen = ({route}: ProfileScreenProps) => {
         <Avatar
           size="2xl"
           source={
-            people.find(a => a.name === route.params.personName)?.img ?? ''
+            people.find((a) => a.name === route.params.personName)?.img ?? ""
           }
           shadow="5"
         />
-        <Text shadow="5" fontSize="2xl" mb="5">
+        <Text fontSize="2xl" mb="5">
           {route.params.personName}
         </Text>
         <Input
@@ -96,7 +96,7 @@ const ProfileScreen = ({route}: ProfileScreenProps) => {
           backgroundColor="white"
           placeholder="..."
           mb="5"
-          onChangeText={text => {
+          onChangeText={(text) => {
             setGullkornText(text);
           }}
           value={gullkornText}
@@ -111,11 +111,12 @@ const ProfileScreen = ({route}: ProfileScreenProps) => {
           </Button>
           <Button
             disabled={!gullkornText}
-            backgroundColor={gullkornText ? colors.primary[500] : 'gray.300'}
+            backgroundColor={gullkornText ? colors.primary[500] : "gray.300"}
             ml="10"
             onPress={() => {
               saveGullkorn();
-            }}>
+            }}
+          >
             Lagre gullkorn 🌽
           </Button>
         </HStack>
@@ -126,9 +127,9 @@ const ProfileScreen = ({route}: ProfileScreenProps) => {
             gullkorn
               ?.sort(
                 (g1, g2) =>
-                  new Date(g2.date).getTime() - new Date(g1.date).getTime(),
+                  new Date(g2.date).getTime() - new Date(g1.date).getTime()
               )
-              .map(g => (
+              .map((g) => (
                 <GullkornCard
                   key={g.id}
                   gullkornDate={dateToNorwegianString(g.date)}
@@ -144,7 +145,7 @@ const ProfileScreen = ({route}: ProfileScreenProps) => {
         modal
         open={datePickerOpen}
         date={new Date(gullkornDate)}
-        onConfirm={date => {
+        onConfirm={(date) => {
           setDatePickerOpen(false);
           setGullkornDate(date.toISOString());
         }}
