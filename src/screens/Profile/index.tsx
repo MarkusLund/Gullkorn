@@ -16,6 +16,7 @@ import {
   HStack,
   Button,
   ScrollView,
+  useTheme,
 } from 'native-base';
 import {Keyboard} from 'react-native';
 import {people} from '../home';
@@ -48,6 +49,7 @@ const ProfileScreen = ({route}: ProfileScreenProps) => {
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [gullkorn, setGullkorn] = useState<Gullkorn[]>([]);
 
+  const {colors} = useTheme();
   useEffect(() => {
     fetchGullkorn(route.params.personName).then(setGullkorn);
   }, [route.params.personName]);
@@ -101,6 +103,7 @@ const ProfileScreen = ({route}: ProfileScreenProps) => {
           onSubmitEditing={() => {
             saveGullkorn();
           }}
+          returnKeyType="send"
         />
         <HStack mb="5">
           <Button onPress={() => setDatePickerOpen(true)}>
@@ -108,6 +111,7 @@ const ProfileScreen = ({route}: ProfileScreenProps) => {
           </Button>
           <Button
             disabled={!gullkornText}
+            backgroundColor={gullkornText ? colors.primary[500] : 'gray.300'}
             ml="10"
             onPress={() => {
               saveGullkorn();
