@@ -1,8 +1,9 @@
 import React from 'react';
 import {SafeAreaView} from 'react-native';
 import {HomeScreenProps} from '../../../types';
-import {Avatar, Center, Pressable, VStack} from 'native-base';
+import {Avatar, Button, Center, Pressable, VStack} from 'native-base';
 import {profileScreenName} from '../Profile';
+import {settingsScreenName} from '../Settings';
 
 export const people = [
   {name: 'Sondre', img: require('../../../imgs/sondre.jpg')},
@@ -36,6 +37,9 @@ const HomeScreen = ({navigation}: HomeScreenProps) => {
               )}
             </Pressable>
           ))}
+          <Button onPress={() => navigation.navigate(settingsScreenName)}>
+            Innstillinger
+          </Button>
         </VStack>
       </Center>
     </SafeAreaView>
