@@ -87,7 +87,7 @@ const ProfileScreen = ({route}: ProfileScreenProps) => {
           }
           shadow="5"
         />
-        <Text shadow="5" fontSize="2xl" mb="5">
+        <Text fontSize="2xl" mb="5">
           {route.params.personName}
         </Text>
         <Input
