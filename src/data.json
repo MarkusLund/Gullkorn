@@ -1,0 +1,22 @@
+{
+  "id": "1",
+  "people": [
+    {
+      "name": "Sondre",
+      "quotes": []
+    },
+    {
+      "name": "Ivar",
+      "quotes": [
+        {
+          "date": "2022-12-12T12:37:32.693Z",
+          "text": "I dag er det 12. desember"
+        }
+      ]
+    },
+    {
+      "name": "Mathias",
+      "quotes": []
+    }
+  ]
+}

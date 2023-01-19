@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import DatePicker from "react-native-date-picker";
 import {
@@ -6,7 +6,6 @@ import {
   dateToNorwgianStringTodayIfNow,
 } from "../../helpers";
 import { ProfileScreenProps, Gullkorn } from "../../types";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Avatar,
   Box,
@@ -21,29 +20,15 @@ import {
 import { Keyboard } from "react-native";
 import GullkornCard from "../../components/Card";
 import { people } from "../../data/consts";
+import { fetchGullkorn, storeGullkorn, UserContext } from "../../data/storage";
 
 export const profileScreenName = "Profile";
 
-const storeGullkorn = async (author: string, gullkorn: Gullkorn[]) => {
-  try {
-    const jsonValue = JSON.stringify(gullkorn);
-    await AsyncStorage.setItem(author, jsonValue);
-  } catch (e) {
-    console.error(e);
-  }
-};
-
-const fetchGullkorn = async (author: string): Promise<Gullkorn[]> => {
-  try {
-    const jsonValue = await AsyncStorage.getItem(author);
-    return jsonValue != null ? JSON.parse(jsonValue) : null;
-  } catch (e) {
-    console.error(e);
-    return [];
-  }
-};
-
 const ProfileScreen = ({ route }: ProfileScreenProps) => {
+  const [user, setUser] = useContext(UserContext);
+
+  console.log(user);
+
   const [gullkornText, setGullkornText] = useState("");
   const [gullkornDate, setGullkornDate] = useState(new Date().toISOString());
   const [datePickerOpen, setDatePickerOpen] = useState(false);

@@ -25,3 +25,18 @@ export type Gullkorn = {
   date: string;
   id: number;
 };
+
+export type Quote = {
+  text: string;
+  date: Date;
+};
+
+export type PersonQuotes = {
+  name: string;
+  quotes: Quote[];
+};
+
+export type State = {
+  id: string;
+  personQuotes: PersonQuotes[];
+};

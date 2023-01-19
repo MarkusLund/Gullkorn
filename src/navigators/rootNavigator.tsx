@@ -1,30 +1,34 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React from "react";
+import React, { useState } from "react";
 import { RootStackParamList } from "../types";
 import ProfileScreen, { profileScreenName } from "../screens/Profile";
 import HomeScreen, { homeScreenName } from "../screens/home";
 import SettingsScreen from "../screens/Settings";
+import { UserContext } from "../data/storage";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
+export default function RootStack() {
+  const [user, setUser] = useState("notSetUser");
 
-export function RootStack() {
   return (
-    <Stack.Navigator initialRouteName={homeScreenName}>
-      <Stack.Screen
-        name={homeScreenName}
-        component={HomeScreen}
-        options={{ title: "Velg person" }}
-      />
-      <Stack.Screen
-        name={profileScreenName}
-        component={ProfileScreen}
-        options={() => ({ title: "Legg til gullkorn" })}
-      />
-      <Stack.Screen
-        name="Settings"
-        component={SettingsScreen}
-        options={() => ({ title: "Innstillinger" })}
-      />
-    </Stack.Navigator>
+    <UserContext.Provider value={[user, setUser]}>
+      <Stack.Navigator initialRouteName={homeScreenName}>
+        <Stack.Screen
+          name={homeScreenName}
+          component={HomeScreen}
+          options={{ title: "Velg person" }}
+        />
+        <Stack.Screen
+          name={profileScreenName}
+          component={ProfileScreen}
+          options={() => ({ title: "Legg til gullkorn" })}
+        />
+        <Stack.Screen
+          name="Settings"
+          component={SettingsScreen}
+          options={() => ({ title: "Innstillinger" })}
+        />
+      </Stack.Navigator>
+    </UserContext.Provider>
   );
 }
