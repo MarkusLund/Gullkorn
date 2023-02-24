@@ -18,49 +18,95 @@ import {
   useTheme,
 } from "native-base";
 import { Keyboard } from "react-native";
+import {
+  useCollection,
+  useCollectionData,
+} from "react-firebase-hooks/firestore";
+import { firestore } from "../../services/firestore";
+import {
+  collection,
+  DocumentData,
+  query,
+  QueryDocumentSnapshot,
+  where,
+} from "firebase/firestore";
 import GullkornCard from "../../components/Card";
 import { people } from "../../data/consts";
-import { fetchGullkorn, storeGullkorn, UserContext } from "../../data/storage";
+import {
+  deleteGullkorn,
+  fetchGullkorn,
+  storeGullkorn,
+} from "../../data/storage";
 
 export const profileScreenName = "Profile";
 
+const removeGullkorn = (id: string) => {
+  // const newLocal = gullkorn.filter((g) => g.id !== id);
+  // setGullkorn(newLocal);
+  deleteGullkorn(id);
+};
+
+// Define a custom converter
+const gullkornConverter = {
+  toFirestore(gullkorn: Gullkorn): DocumentData {
+    return {
+      content: gullkorn,
+    };
+  },
+  fromFirestore(snapshot: QueryDocumentSnapshot): Gullkorn {
+    const data = snapshot.data();
+    return {
+      id: snapshot.id,
+      author: data.author,
+      gullkorn: data.gullkorn,
+      date: data.date,
+    };
+  },
+};
+
 const ProfileScreen = ({ route }: ProfileScreenProps) => {
-  const [user, setUser] = useContext(UserContext);
-
-  console.log(user);
-
   const [gullkornText, setGullkornText] = useState("");
   const [gullkornDate, setGullkornDate] = useState(new Date().toISOString());
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [gullkorn, setGullkorn] = useState<Gullkorn[]>([]);
 
-  const { colors } = useTheme();
-  useEffect(() => {
-    fetchGullkorn(route.params.personName).then(setGullkorn);
-  }, [route.params.personName]);
+  const gullkornCollectionRef = collection(firestore, "gullkorn").withConverter(
+    gullkornConverter
+  );
+  const authorQuery = query(
+    gullkornCollectionRef,
+    where("author", "==", route.params.personName)
+  );
 
-  const removeGullkorn = (id: number) => {
-    const newLocal = gullkorn.filter((g) => g.id !== id);
-    setGullkorn(newLocal);
-    storeGullkorn(route.params.personName, newLocal);
+  const [gullkornDocs, loading, error] = useCollectionData(authorQuery, {
+    snapshotListenOptions: { includeMetadataChanges: true },
+  });
+
+  const resetGullkornForm = () => {
+    setGullkornText("");
+    setGullkornDate(new Date().toISOString());
   };
 
-  const saveGullkorn = () => {
+  const { colors } = useTheme();
+
+  const createGullkorn = () => {
     const newGullkorn: Gullkorn = {
       author: route.params.personName,
       gullkorn: gullkornText,
       date: gullkornDate,
-      id: Date.now(),
+      id: "will be replaced by firestore id",
     };
-    const updatedGullkorns = gullkorn
-      ? [...gullkorn, newGullkorn]
-      : [newGullkorn];
-    storeGullkorn(route.params.personName, updatedGullkorns);
-    setGullkorn(updatedGullkorns);
-    setGullkornText("");
-    setGullkornDate(new Date().toISOString());
+    storeGullkorn(newGullkorn);
+    resetGullkornForm();
     Keyboard.dismiss();
   };
+
+  if (loading) {
+    return <Text>Loading...</Text>;
+  }
+  if (error) {
+    return <Text>Error: {error.message}</Text>;
+  }
 
   return (
     <Box safeArea h="100%">
@@ -86,7 +132,7 @@ const ProfileScreen = ({ route }: ProfileScreenProps) => {
           }}
           value={gullkornText}
           onSubmitEditing={() => {
-            saveGullkorn();
+            createGullkorn();
           }}
           returnKeyType="send"
         />
@@ -99,7 +145,7 @@ const ProfileScreen = ({ route }: ProfileScreenProps) => {
             backgroundColor={gullkornText ? colors.primary[500] : "gray.300"}
             ml="10"
             onPress={() => {
-              saveGullkorn();
+              createGullkorn();
             }}
           >
             Lagre gullkorn 🌽
@@ -108,8 +154,8 @@ const ProfileScreen = ({ route }: ProfileScreenProps) => {
       </VStack>
       <ScrollView>
         <VStack>
-          {gullkorn &&
-            gullkorn
+          {gullkornDocs &&
+            gullkornDocs
               ?.sort(
                 (g1, g2) =>
                   new Date(g2.date).getTime() - new Date(g1.date).getTime()
