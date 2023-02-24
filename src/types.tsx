@@ -18,6 +18,9 @@ export type Gullkorn = {
   author: string;
   gullkorn: string;
   date: string;
+};
+
+export type GullkornWithId = Gullkorn & {
   id: string;
 };
 

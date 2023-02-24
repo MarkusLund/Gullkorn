@@ -1,9 +1,8 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React, { useState } from "react";
+import React from "react";
 import { RootStackParamList } from "../types";
 import ProfileScreen, { profileScreenName } from "../screens/Profile";
 import HomeScreen, { homeScreenName } from "../screens/home";
-import SettingsScreen from "../screens/Settings";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 export default function RootStack() {

@@ -1,11 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 
-import DatePicker from "react-native-date-picker";
-import {
-  dateToNorwegianString,
-  dateToNorwgianStringTodayIfNow,
-} from "../../helpers";
-import { ProfileScreenProps, Gullkorn } from "../../types";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { dateToNorwegianString } from "../../helpers";
+import { ProfileScreenProps, Gullkorn, GullkornWithId } from "../../types";
 import {
   Avatar,
   Box,
@@ -16,12 +13,10 @@ import {
   Button,
   ScrollView,
   useTheme,
+  Spinner,
 } from "native-base";
 import { Keyboard } from "react-native";
-import {
-  useCollection,
-  useCollectionData,
-} from "react-firebase-hooks/firestore";
+import { useCollectionData } from "react-firebase-hooks/firestore";
 import { firestore } from "../../services/firestore";
 import {
   collection,
@@ -32,11 +27,7 @@ import {
 } from "firebase/firestore";
 import GullkornCard from "../../components/Card";
 import { people } from "../../data/consts";
-import {
-  deleteGullkorn,
-  fetchGullkorn,
-  storeGullkorn,
-} from "../../data/storage";
+import { deleteGullkorn, storeGullkorn } from "../../data/storage";
 
 export const profileScreenName = "Profile";
 
@@ -48,12 +39,12 @@ const removeGullkorn = (id: string) => {
 
 // Define a custom converter
 const gullkornConverter = {
-  toFirestore(gullkorn: Gullkorn): DocumentData {
+  toFirestore(gullkorn: GullkornWithId): DocumentData {
     return {
       content: gullkorn,
     };
   },
-  fromFirestore(snapshot: QueryDocumentSnapshot): Gullkorn {
+  fromFirestore(snapshot: QueryDocumentSnapshot): GullkornWithId {
     const data = snapshot.data();
     return {
       id: snapshot.id,
@@ -66,9 +57,7 @@ const gullkornConverter = {
 
 const ProfileScreen = ({ route }: ProfileScreenProps) => {
   const [gullkornText, setGullkornText] = useState("");
-  const [gullkornDate, setGullkornDate] = useState(new Date().toISOString());
-  const [datePickerOpen, setDatePickerOpen] = useState(false);
-  const [gullkorn, setGullkorn] = useState<Gullkorn[]>([]);
+  const [gullkornDate, setGullkornDate] = useState(new Date());
 
   const gullkornCollectionRef = collection(firestore, "gullkorn").withConverter(
     gullkornConverter
@@ -84,7 +73,7 @@ const ProfileScreen = ({ route }: ProfileScreenProps) => {
 
   const resetGullkornForm = () => {
     setGullkornText("");
-    setGullkornDate(new Date().toISOString());
+    setGullkornDate(new Date());
   };
 
   const { colors } = useTheme();
@@ -93,8 +82,7 @@ const ProfileScreen = ({ route }: ProfileScreenProps) => {
     const newGullkorn: Gullkorn = {
       author: route.params.personName,
       gullkorn: gullkornText,
-      date: gullkornDate,
-      id: "will be replaced by firestore id",
+      date: gullkornDate.toISOString(),
     };
     storeGullkorn(newGullkorn);
     resetGullkornForm();
@@ -102,10 +90,19 @@ const ProfileScreen = ({ route }: ProfileScreenProps) => {
   };
 
   if (loading) {
-    return <Text>Loading...</Text>;
+    <Box safeArea h="100%">
+      <VStack alignItems="center">
+        <Text>Loading...</Text>
+        <Spinner />
+      </VStack>
+    </Box>;
   }
   if (error) {
-    return <Text>Error: {error.message}</Text>;
+    <Box safeArea h="100%">
+      <VStack alignItems="center">
+        <Text>Error: {error.message}</Text>
+      </VStack>
+    </Box>;
   }
 
   return (
@@ -136,10 +133,18 @@ const ProfileScreen = ({ route }: ProfileScreenProps) => {
           }}
           returnKeyType="send"
         />
-        <HStack mb="5">
-          <Button onPress={() => setDatePickerOpen(true)}>
-            {dateToNorwgianStringTodayIfNow(gullkornDate)}
-          </Button>
+        <HStack mb="5" mr="5">
+          <DateTimePicker
+            style={{ width: 150 }}
+            locale="nb"
+            value={new Date(gullkornDate)}
+            mode={"date"}
+            is24Hour={true}
+            onChange={(_, selectedDate) => {
+              const currentDate = selectedDate;
+              setGullkornDate(currentDate);
+            }}
+          />
           <Button
             disabled={!gullkornText}
             backgroundColor={gullkornText ? colors.primary[500] : "gray.300"}
@@ -172,23 +177,6 @@ const ProfileScreen = ({ route }: ProfileScreenProps) => {
               ))}
         </VStack>
       </ScrollView>
-      <DatePicker
-        modal
-        open={datePickerOpen}
-        date={new Date(gullkornDate)}
-        onConfirm={(date) => {
-          setDatePickerOpen(false);
-          setGullkornDate(date.toISOString());
-        }}
-        onCancel={() => {
-          setDatePickerOpen(false);
-        }}
-        mode="date"
-        locale="nb-NO"
-        confirmText="Bekreft"
-        cancelText="Avbryt"
-        title="Velg dato"
-      />
     </Box>
   );
 };
