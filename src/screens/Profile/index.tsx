@@ -32,12 +32,9 @@ import { deleteGullkorn, storeGullkorn } from "../../data/storage";
 export const profileScreenName = "Profile";
 
 const removeGullkorn = (id: string) => {
-  // const newLocal = gullkorn.filter((g) => g.id !== id);
-  // setGullkorn(newLocal);
   deleteGullkorn(id);
 };
 
-// Define a custom converter
 const gullkornConverter = {
   toFirestore(gullkorn: GullkornWithId): DocumentData {
     return {
