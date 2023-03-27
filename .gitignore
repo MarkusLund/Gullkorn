@@ -65,3 +65,7 @@ web-build/
 
 # Private images
 src/imgs/*
+
+.env
+
+*.log

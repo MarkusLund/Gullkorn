@@ -1,9 +1,8 @@
 import React from "react";
 import { SafeAreaView } from "react-native";
 import { HomeScreenProps } from "../../types";
-import { Avatar, Button, Center, Pressable, VStack } from "native-base";
+import { Avatar, Center, Pressable, VStack, Text } from "native-base";
 import { profileScreenName } from "../Profile";
-import { settingsScreenName } from "../Settings";
 import { people } from "../../data/consts";
 
 export const homeScreenName = "Home";
@@ -33,9 +32,6 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
               )}
             </Pressable>
           ))}
-          <Button onPress={() => navigation.navigate(settingsScreenName)}>
-            Innstillinger
-          </Button>
         </VStack>
       </Center>
     </SafeAreaView>

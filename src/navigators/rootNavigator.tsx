@@ -3,11 +3,9 @@ import React from "react";
 import { RootStackParamList } from "../types";
 import ProfileScreen, { profileScreenName } from "../screens/Profile";
 import HomeScreen, { homeScreenName } from "../screens/home";
-import SettingsScreen from "../screens/Settings";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
-
-export function RootStack() {
+export default function RootStack() {
   return (
     <Stack.Navigator initialRouteName={homeScreenName}>
       <Stack.Screen
@@ -19,11 +17,6 @@ export function RootStack() {
         name={profileScreenName}
         component={ProfileScreen}
         options={() => ({ title: "Legg til gullkorn" })}
-      />
-      <Stack.Screen
-        name="Settings"
-        component={SettingsScreen}
-        options={() => ({ title: "Innstillinger" })}
       />
     </Stack.Navigator>
   );
